@@ -13,7 +13,7 @@ export const Container = styled.View`
   border-radius: 8px;
 `
 
-export const Hour = styled.Text`
+export const Time = styled.Text`
   font-size: ${({ theme }) => theme.font_size.xs}px;
   font-family: ${({ theme }) => theme.font_family.bold};
   color: ${({ theme }) => theme.colors.white};
@@ -37,7 +37,7 @@ export const Meal = styled(Text).attrs({
   numberOfLines: 1,
   ellipsizeMode: 'tail',
 })`
-  font-size: ${({ theme }) => theme.font_size.md}px;
+  font-size: 15px;
   font-family: ${({ theme }) => theme.font_family.regular};
   color: ${({ theme }) => theme.colors.gray_100};
   flex: 1;
@@ -45,8 +45,8 @@ export const Meal = styled(Text).attrs({
 `
 
 export const Label = styled.View<Props>`
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background-color: ${({ theme, onDiet }) =>
     onDiet ? theme.colors.green_500 : theme.colors.red_500};

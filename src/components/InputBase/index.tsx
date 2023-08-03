@@ -1,13 +1,13 @@
 import { useTheme } from 'styled-components'
-import { Container, InputText, InputTypeStyleProps, Label } from './styles'
+import { Container, InputText, InputTypeStyleProps } from './styles'
 import { useState } from 'react'
 
 type Props = {
-  label: string
   type?: InputTypeStyleProps
+  onChange: (value: string) => void
 }
 
-export function InputBase({ type = 'DEFAULT', label }: Props) {
+export function InputBase({ type = 'DEFAULT', onChange }: Props) {
   const [isFocused, setIsFocused] = useState(false)
   const theme = useTheme()
 
@@ -21,7 +21,6 @@ export function InputBase({ type = 'DEFAULT', label }: Props) {
 
   return (
     <Container type={type}>
-      <Label>{label}</Label>
       <InputText
         type={type}
         style={{
@@ -29,8 +28,11 @@ export function InputBase({ type = 'DEFAULT', label }: Props) {
             ? theme.colors.green_500
             : theme.colors.gray_500,
         }}
-        onFocus={handleInputFocus}
+        onFocus={() => {
+          handleInputFocus()
+        }}
         onBlur={handleInputBlur}
+        onChangeText={onChange}
       />
     </Container>
   )

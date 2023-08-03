@@ -1,78 +1,137 @@
+/* eslint-disable spaced-comment */
+/* eslint-disable no-lone-blocks */
 import { ScreenHeader } from '@components/ScreenHeader'
-import { ButtonsContainer, ButtonsLabel, Container, Form } from './styles'
+import {
+  ButtonsContainer,
+  ButtonsLabel,
+  ConfirmDateBtn,
+  ConfirmDateText,
+  Container,
+  DateButton,
+  DateTextButton,
+  DateTimePickerContainer,
+  DateTimePickerLabel,
+  Form,
+  InputContainer,
+} from './styles'
 import { InputBase } from '@components/InputBase'
 import { InnerContainerForTwoItems } from '@components/InnerContainerForTwoItems'
 import { ContainerForTwoItems } from '@components/ContainerForTwoItems'
-import { Pressable, TextInput, View } from 'react-native'
+import { Alert, Modal, View } from 'react-native'
 import { DietButton } from '@components/DietButton'
 import { Button } from '@components/Button'
-import { useState } from 'react'
-import DateTimePicker from '@react-native-community/datetimepicker'
+import { useState, useCallback, useEffect } from 'react'
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker'
 import { getFormattedDate } from '@utils/getFormattedDate'
+import { LabelBase } from '@components/LabelBase'
+import { getFormattedTime } from '@utils/getFormattedTime'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useNavigation } from '@react-navigation/native'
+import { addNewMeal } from '@storage/meals/addNewMeal'
+import { generateRandomId } from '@utils/generateRandomID'
 
 export function NewMeal() {
   const [selectedType, setSelectedType] = useState('')
-  const [selectedDate, setSelectedDate] = useState(null)
+
   const [showDatePicker, setShowDatePicker] = useState(false)
+
   const [date, setDate] = useState(new Date())
+
+  const [mealName, setMealName] = useState('')
+
+  const [mealDescription, setMealDescription] = useState('')
+
+  const navigation = useNavigation()
 
   const handleSelectType = (type: string) => {
     setSelectedType(type)
   }
 
-  const toggleDatePicker = () => {
-    setShowDatePicker(!showDatePicker)
-  }
-
-  console.log(showDatePicker)
-
-  function onChange(event: Event, selectedDate?: Date | undefined) {
+  function onChange(
+    event: DateTimePickerEvent,
+    selectedDate?: Date | undefined,
+  ) {
     if (event.type === 'set' && selectedDate) {
-      const localDate = new Date(
-        selectedDate.getTime() + selectedDate.getTimezoneOffset() * 60000,
-      )
-      setDate(localDate)
-    } else {
-      setShowDatePicker(!showDatePicker)
+      setDate(selectedDate)
     }
   }
 
-  console.log(getFormattedDate(date))
+  async function handleCreateNewMeal(
+    mealName: string,
+    mealDescription: string,
+    selectedType: string,
+  ) {
+    try {
+      if (mealName === '' || mealDescription === '' || selectedType === '') {
+        return Alert.alert(
+          'New Meal',
+          'Please, fill all the fields in order to register a new meal',
+        )
+      }
+
+      const newMeal = {
+        id: generateRandomId(),
+        name: mealName,
+        description: mealDescription,
+        time: getFormattedTime(date),
+        date: getFormattedDate(date),
+        isOnDiet: selectedType === 'ONDIET',
+      }
+
+      console.log(newMeal.date)
+
+      await addNewMeal(newMeal)
+      navigation.navigate('home')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  {
+    /*useEffect(() => {
+    async function clearAsyncStorage() {
+      try {
+        await AsyncStorage.clear()
+        console.log('AsyncStorage cleared successfully.')
+      } catch (error) {
+        console.error('Error clearing AsyncStorage:', error)
+      }
+    }
+
+    clearAsyncStorage()
+  })
+  */
+  }
 
   return (
     <Container>
       <ScreenHeader type="DEFAULT" title="New Meal" />
       <Form>
-        <InputBase label="Name" type="DEFAULT" />
-        <InputBase label="Description" type="BIGGER" />
-        {showDatePicker && (
-          <DateTimePicker
-            mode="date"
-            display="spinner"
-            textColor="white"
-            value={date}
-            onChange={onChange}
+        <InputContainer>
+          <LabelBase label="Name" />
+          <InputBase type="DEFAULT" onChange={(value) => setMealName(value)} />
+        </InputContainer>
+        <InputContainer>
+          <LabelBase label="Description" />
+          <InputBase
+            type="BIGGER"
+            onChange={(value) => setMealDescription(value)}
           />
-        )}
+        </InputContainer>
         {!showDatePicker && (
-          <Pressable onPressIn={() => setShowDatePicker(true)}>
-            <TextInput
-              onFocus={() => setShowDatePicker(true)}
-              value={getFormattedDate(date)}
-            />
-          </Pressable>
+          <InputContainer>
+            <LabelBase label="Date" />
+            <DateButton onPress={() => setShowDatePicker(true)}>
+              <DateTextButton>
+                {date
+                  ? `${getFormattedDate(date)} - ${getFormattedTime(date)}`
+                  : ''}
+              </DateTextButton>
+            </DateButton>
+          </InputContainer>
         )}
-        <ContainerForTwoItems>
-          <InnerContainerForTwoItems>
-            <Pressable onPress={toggleDatePicker}>
-              <InputBase label="Date" type="DEFAULT" />
-            </Pressable>
-          </InnerContainerForTwoItems>
-          <View style={{ marginLeft: 12, marginRight: 12 }} />
-          <InnerContainerForTwoItems>
-            <InputBase label="Hour" type="DEFAULT" />
-          </InnerContainerForTwoItems>
-        </ContainerForTwoItems>
         <ButtonsContainer>
           <ButtonsLabel>Is it on your diet?</ButtonsLabel>
           <ContainerForTwoItems>
@@ -93,8 +152,33 @@ export function NewMeal() {
             </InnerContainerForTwoItems>
           </ContainerForTwoItems>
         </ButtonsContainer>
-        <Button title="Register your Meal" hasIcon={false} />
+        <Button
+          title="Register your Meal"
+          hasIcon={false}
+          onPress={() =>
+            handleCreateNewMeal(mealName, mealDescription, selectedType)
+          }
+        />
       </Form>
+      {showDatePicker && (
+        <Modal visible={showDatePicker} transparent={true} animationType="fade">
+          <DateTimePickerContainer>
+            <DateTimePickerLabel>
+              Select your meal&apos;s date and hour:
+            </DateTimePickerLabel>
+            <DateTimePicker
+              mode="datetime"
+              display="spinner"
+              textColor="white"
+              value={date}
+              onChange={onChange}
+            />
+            <ConfirmDateBtn onPress={() => setShowDatePicker(false)}>
+              <ConfirmDateText>Confirm Date</ConfirmDateText>
+            </ConfirmDateBtn>
+          </DateTimePickerContainer>
+        </Modal>
+      )}
     </Container>
   )
 }

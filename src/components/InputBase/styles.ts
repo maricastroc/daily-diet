@@ -7,18 +7,15 @@ type Props = {
 }
 
 export const Container = styled.View<Props>`
-  gap: 8px;
-  width: 100%;
-`
-
-export const Label = styled.Text`
-  font-size: ${({ theme }) => theme.font_size.sm}px;
-  font-family: ${({ theme }) => theme.font_family.bold};
-  color: ${({ theme }) => theme.colors.white};
-`
-
-export const InputText = styled.TextInput<Props>`
   height: ${({ type }) => (type === 'DEFAULT' ? '48px' : '120px')};
+  width: 100%;
+  align-items: flex-start;
+  justify-content: flex-start;
+`
+
+export const InputText = styled.TextInput.attrs<Props>(({ type }) => ({
+  multiline: type === 'BIGGER',
+}))<Props>`
   background-color: ${({ theme }) => theme.colors.gray_400};
   color: ${({ theme }) => theme.colors.gray_100};
   font-size: ${({ theme }) => theme.font_size.sm}px;
@@ -27,4 +24,5 @@ export const InputText = styled.TextInput<Props>`
   border: solid 1px ${({ theme }) => theme.colors.gray_500};
   border-radius: 8px;
   width: 100%;
+  flex: 1;
 `

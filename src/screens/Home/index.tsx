@@ -1,39 +1,59 @@
 import { StatisticCard } from '@components/StatisticCard'
-import { Container, MealsLabel, MealsTitle } from './styles'
+import { Container, MealGroupTitle, MealsLabel, MealsTitle } from './styles'
 import { HomeHeader } from '@components/HomeHeader'
 import { Button } from '@components/Button'
-import { MealGroup } from '@components/MealGroup'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import { useCallback, useState } from 'react'
+import { getAllMealGroups } from '@storage/meals/getAllMealGroups'
+import { Alert, FlatList, View } from 'react-native'
+import { MealGroupProps } from '@storage/storageConfig'
+import { Loading } from '@components/Loading'
+import { MealCard } from '@components/MealCard'
 
-const allMeals = [
-  {
-    title: 'X-tudo',
-    hour: '08:00pm',
-    onDiet: false,
-  },
-  {
-    title: 'Whey protein com leite',
-    hour: '04:00pm',
-    onDiet: true,
-  },
-  {
-    title: 'Salada cesar com frango grelhadoooo e legumes',
-    hour: '12:30pm',
-    onDiet: true,
-  },
-  {
-    title: 'Vitamina de banana com abacate',
-    hour: '09:30am',
-    onDiet: true,
-  },
-]
+export interface MealProps {
+  mealName: string
+  mealDescription: string
+  hour: string
+  onDiet: boolean
+}
+
+export interface MealsList {
+  allMeals: MealProps[]
+  date: string
+}
 
 export function Home() {
   const navigation = useNavigation()
 
+  const [mealGroups, setMealGroups] = useState<MealGroupProps[] | undefined>([])
+
+  const [isLoading, setIsLoading] = useState(false)
+
   function goToNewMealScreen() {
     navigation.navigate('newMeal')
   }
+
+  const fetchMealGroups = async () => {
+    try {
+      setIsLoading(true)
+      const data = await getAllMealGroups()
+
+      setMealGroups(data)
+    } catch (error) {
+      Alert.alert('Meals', 'Não foi possível carregar as refeições!')
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchMealGroups()
+    }, []),
+  )
+
+  console.log(mealGroups)
 
   return (
     <Container>
@@ -43,7 +63,33 @@ export function Home() {
         <MealsTitle>Meals</MealsTitle>
         <Button title="New Meal" hasIcon={true} onPress={goToNewMealScreen} />
       </MealsLabel>
-      <MealGroup meals={allMeals} date="12.08.2023" />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <FlatList
+          data={mealGroups}
+          keyExtractor={(group) => group.date}
+          renderItem={(group) => (
+            <>
+              <MealGroupTitle>{group.item.date}</MealGroupTitle>
+              <FlatList
+                data={group.item.meals}
+                keyExtractor={(meal) => meal.id.toString()}
+                contentContainerStyle={{ paddingBottom: 40 }}
+                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                renderItem={(meal) => (
+                  <MealCard
+                    onDiet={meal.item.isOnDiet}
+                    time={meal.item.time}
+                    title={meal.item.name}
+                  />
+                )}
+                showsVerticalScrollIndicator={false}
+              />
+            </>
+          )}
+        />
+      )}
     </Container>
   )
 }

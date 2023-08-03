@@ -1,6 +1,6 @@
 import {
   Container,
-  Hour,
+  Time,
   Label,
   Meal,
   MealContainer,
@@ -9,14 +9,15 @@ import {
 
 type Props = {
   title: string
-  hour: string
+  time: string
   onDiet?: boolean
 }
 
-export function MealCard({ onDiet = true, title, hour }: Props) {
+export function MealCard({ onDiet = true, title, time }: Props) {
+  console.log(time)
   return (
     <Container>
-      <Hour>{hour}</Hour>
+      <Time>{time}</Time>
       <Separator />
       <MealContainer>
         <Meal>{title}</Meal>

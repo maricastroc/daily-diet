@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 export const Container = styled(SafeAreaView)`
   flex: 1;
-  padding: 0 24px;
+  padding: 0 24px 24px;
   flex-direction: column;
   background-color: ${({ theme }) => theme.colors.gray_700};
 `
@@ -24,8 +24,9 @@ export const MealsListContainer = styled.FlatList`
   flex-direction: column;
 `
 
-export const MealTitle = styled.Text`
-  font-size: ${({ theme }) => theme.font_size.xl}px;
+export const MealGroupTitle = styled.Text`
+  margin: 38px 0 8px;
+  font-size: 16px;
   font-family: ${({ theme }) => theme.font_family.bold};
   color: ${({ theme }) => theme.colors.white};
 `
