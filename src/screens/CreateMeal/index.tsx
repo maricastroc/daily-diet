@@ -1,6 +1,11 @@
-/* eslint-disable spaced-comment */
-/* eslint-disable no-lone-blocks */
-import { ScreenHeader } from '@components/ScreenHeader'
+import { Alert, Modal, View } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import { useState } from 'react'
+
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker'
+
 import {
   ButtonsContainer,
   ButtonsLabel,
@@ -14,23 +19,20 @@ import {
   Form,
   InputContainer,
 } from './styles'
+
 import { InputBase } from '@components/InputBase'
 import { InnerContainerForTwoItems } from '@components/InnerContainerForTwoItems'
 import { ContainerForTwoItems } from '@components/ContainerForTwoItems'
-import { Alert, Modal, View } from 'react-native'
+import { ScreenHeader } from '@components/ScreenHeader'
 import { DietButton } from '@components/DietButton'
 import { Button } from '@components/Button'
-import { useState, useCallback, useEffect } from 'react'
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from '@react-native-community/datetimepicker'
-import { getFormattedDate } from '@utils/getFormattedDate'
 import { LabelBase } from '@components/LabelBase'
+
+import { getFormattedDate } from '@utils/getFormattedDate'
 import { getFormattedTime } from '@utils/getFormattedTime'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useNavigation } from '@react-navigation/native'
-import { addNewMeal } from '@storage/meals/addNewMeal'
 import { generateRandomId } from '@utils/generateRandomID'
+
+import { addNewMeal } from '@storage/meals/addNewMeal'
 
 export function CreateMeal() {
   const [selectedType, setSelectedType] = useState('')
@@ -87,22 +89,6 @@ export function CreateMeal() {
     } catch (error) {
       console.log(error)
     }
-  }
-
-  {
-    /*useEffect(() => {
-    async function clearAsyncStorage() {
-      try {
-        await AsyncStorage.clear()
-        console.log('AsyncStorage cleared successfully.')
-      } catch (error) {
-        console.error('Error clearing AsyncStorage:', error)
-      }
-    }
-
-    clearAsyncStorage()
-  })
-  */
   }
 
   return (
