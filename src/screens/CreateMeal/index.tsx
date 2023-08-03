@@ -32,7 +32,7 @@ import { useNavigation } from '@react-navigation/native'
 import { addNewMeal } from '@storage/meals/addNewMeal'
 import { generateRandomId } from '@utils/generateRandomID'
 
-export function NewMeal() {
+export function CreateMeal() {
   const [selectedType, setSelectedType] = useState('')
 
   const [showDatePicker, setShowDatePicker] = useState(false)

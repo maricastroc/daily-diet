@@ -5,9 +5,10 @@ import { useState } from 'react'
 type Props = {
   type?: InputTypeStyleProps
   onChange: (value: string) => void
+  value?: string
 }
 
-export function InputBase({ type = 'DEFAULT', onChange }: Props) {
+export function InputBase({ type = 'DEFAULT', onChange, value = '' }: Props) {
   const [isFocused, setIsFocused] = useState(false)
   const theme = useTheme()
 
@@ -33,6 +34,7 @@ export function InputBase({ type = 'DEFAULT', onChange }: Props) {
         }}
         onBlur={handleInputBlur}
         onChangeText={onChange}
+        value={value !== '' ? value : ''}
       />
     </Container>
   )

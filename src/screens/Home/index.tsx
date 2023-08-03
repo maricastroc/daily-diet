@@ -6,21 +6,9 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import { useCallback, useState } from 'react'
 import { getAllMealGroups } from '@storage/meals/getAllMealGroups'
 import { Alert, FlatList, View } from 'react-native'
-import { MealGroupProps } from '@storage/storageConfig'
+import { MealGroupProps, MealProps } from '@storage/storageConfig'
 import { Loading } from '@components/Loading'
 import { MealCard } from '@components/MealCard'
-
-export interface MealProps {
-  mealName: string
-  mealDescription: string
-  hour: string
-  onDiet: boolean
-}
-
-export interface MealsList {
-  allMeals: MealProps[]
-  date: string
-}
 
 export function Home() {
   const navigation = useNavigation()
@@ -30,7 +18,11 @@ export function Home() {
   const [isLoading, setIsLoading] = useState(false)
 
   function goToNewMealScreen() {
-    navigation.navigate('newMeal')
+    navigation.navigate('createMeal')
+  }
+
+  function goToNewMealDetailsScreen(meal: MealProps) {
+    navigation.navigate('showMeal', { meal })
   }
 
   const fetchMealGroups = async () => {
@@ -52,8 +44,6 @@ export function Home() {
       fetchMealGroups()
     }, []),
   )
-
-  console.log(mealGroups)
 
   return (
     <Container>
@@ -82,6 +72,7 @@ export function Home() {
                     onDiet={meal.item.isOnDiet}
                     time={meal.item.time}
                     title={meal.item.name}
+                    onPress={() => goToNewMealDetailsScreen(meal.item)}
                   />
                 )}
                 showsVerticalScrollIndicator={false}

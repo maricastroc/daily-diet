@@ -1,11 +1,11 @@
-import { Text } from 'react-native'
+import { Text, TouchableOpacity } from 'react-native'
 import styled from 'styled-components/native'
 
 type Props = {
   onDiet: boolean
 }
 
-export const Container = styled.View`
+export const Container = styled(TouchableOpacity)`
   flex-direction: row;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.gray_400};
