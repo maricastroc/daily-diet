@@ -74,8 +74,6 @@ export function CreateMeal() {
         isOnDiet,
       }
 
-      console.log(newMeal.date)
-
       await addNewMeal(newMeal)
       navigation.navigate('feedback', { isOnDiet })
     } catch (error) {
@@ -85,7 +83,7 @@ export function CreateMeal() {
 
   return (
     <Container>
-      <ScreenHeader type="DEFAULT" title="New Meal" />
+      <ScreenHeader title="New Meal" />
       <Form>
         <InputContainer>
           <LabelBase label="Name" />

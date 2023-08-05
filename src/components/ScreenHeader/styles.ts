@@ -3,28 +3,11 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import ChevronLeft from 'react-native-vector-icons/Feather'
 import { TouchableOpacity } from 'react-native'
 
-export type ScreenHeaderTypeStyleProps = 'DEFAULT' | 'ONDIET' | 'OFFDIET'
-
-type Props = {
-  type: ScreenHeaderTypeStyleProps
-}
-
-export const Container = styled(SafeAreaView)<Props>`
+export const Container = styled(SafeAreaView)`
   position: relative;
   flex-direction: row;
   padding: 20px;
-  background-color: ${({ theme, type }) => {
-    switch (type) {
-      case 'DEFAULT':
-        return theme.colors.gray_700
-      case 'ONDIET':
-        return theme.colors.green_700
-      case 'OFFDIET':
-        return theme.colors.red_700
-      default:
-        return theme.colors.gray_700
-    }
-  }};
+  background-color: ${({ theme }) => theme.colors.gray_700};
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -46,18 +29,7 @@ export const ButtonIcon = styled(TouchableOpacity)`
   height: 32px;
 `
 
-export const Icon = styled(ChevronLeft)<Props>`
+export const Icon = styled(ChevronLeft)`
   font-size: 24px;
-  color: ${({ theme, type }) => {
-    switch (type) {
-      case 'DEFAULT':
-        return theme.colors.gray_100
-      case 'ONDIET':
-        return theme.colors.green_300
-      case 'OFFDIET':
-        return theme.colors.red_300
-      default:
-        return theme.colors.gray_100
-    }
-  }};
+  color: ${({ theme }) => theme.colors.gray_100};
 `

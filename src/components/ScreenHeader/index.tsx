@@ -1,18 +1,11 @@
-import {
-  ButtonIcon,
-  Container,
-  Icon,
-  ScreenHeaderTypeStyleProps,
-  Title,
-} from './styles'
+import { ButtonIcon, Container, Icon, Title } from './styles'
 import { useNavigation } from '@react-navigation/native'
 
 type Props = {
-  type?: ScreenHeaderTypeStyleProps
   title: string
 }
 
-export function ScreenHeader({ type = 'DEFAULT', title }: Props) {
+export function ScreenHeader({ title }: Props) {
   const navigation = useNavigation()
 
   function goBack() {
@@ -20,9 +13,9 @@ export function ScreenHeader({ type = 'DEFAULT', title }: Props) {
   }
 
   return (
-    <Container type={type}>
+    <Container>
       <ButtonIcon onPress={goBack}>
-        <Icon name="chevron-left" type={type} />
+        <Icon name="chevron-left" />
       </ButtonIcon>
       <Title>{title}</Title>
     </Container>

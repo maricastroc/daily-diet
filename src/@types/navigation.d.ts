@@ -26,6 +26,7 @@ export declare global {
       feedback: {
         isOnDiet: boolean
       }
+      statistics: undefined
     }
   }
 }

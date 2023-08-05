@@ -9,6 +9,7 @@ import { Alert, FlatList, View } from 'react-native'
 import { MealGroupProps, MealProps } from '@storage/storageConfig'
 import { Loading } from '@components/Loading'
 import { MealCard } from '@components/MealCard'
+import { countMealsByDietStatus } from '@utils/countMealsByDietStatus'
 
 export function Home() {
   const navigation = useNavigation()
@@ -17,8 +18,16 @@ export function Home() {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  function goToNewMealScreen() {
+  const [onDietPercentage, setOnDietPercentage] = useState('')
+
+  const [isOnDietPercentageHigher, setIsOnDietPercentageHigher] = useState(true)
+
+  function goToCreateMealScreen() {
     navigation.navigate('createMeal')
+  }
+
+  function goToStatisticsScreen() {
+    navigation.navigate('statistics')
   }
 
   function goToNewMealDetailsScreen(meal: MealProps) {
@@ -30,9 +39,16 @@ export function Home() {
       setIsLoading(true)
       const data = await getAllMealGroups()
 
+      const { onDietPercentage, onDietCount, offDietCount } =
+        countMealsByDietStatus(data)
+
+      setOnDietPercentage(onDietPercentage)
+
+      setIsOnDietPercentageHigher(onDietCount > offDietCount)
+
       setMealGroups(data)
     } catch (error) {
-      Alert.alert('Meals', 'Não foi possível carregar as refeições!')
+      Alert.alert('Meals', 'Unable to load meals!')
       console.log(error)
     } finally {
       setIsLoading(false)
@@ -48,10 +64,18 @@ export function Home() {
   return (
     <Container>
       <HomeHeader />
-      <StatisticCard />
+      <StatisticCard
+        onPress={goToStatisticsScreen}
+        value={onDietPercentage}
+        onDiet={isOnDietPercentageHigher}
+      />
       <MealsLabel>
         <MealsTitle>Meals</MealsTitle>
-        <Button title="New Meal" hasIcon={true} onPress={goToNewMealScreen} />
+        <Button
+          title="New Meal"
+          hasIcon={true}
+          onPress={goToCreateMealScreen}
+        />
       </MealsLabel>
       {isLoading ? (
         <Loading />

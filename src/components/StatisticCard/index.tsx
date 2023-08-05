@@ -1,3 +1,4 @@
+import { TouchableOpacityProps } from 'react-native'
 import {
   ButtonIcon,
   Container,
@@ -7,15 +8,20 @@ import {
   TextContainer,
 } from './styles'
 
-export function StatisticCard() {
+type StatisticCardProps = TouchableOpacityProps & {
+  value: string
+  onDiet: boolean
+}
+
+export function StatisticCard({ value, onDiet, ...rest }: StatisticCardProps) {
   return (
-    <Container>
+    <Container type={onDiet ? 'ONDIET' : 'OFFDIET'} {...rest}>
       <TextContainer>
-        <Heading>90,86%</Heading>
+        <Heading>{`${value}%`}</Heading>
         <Paragraph>of the meals within the diet</Paragraph>
       </TextContainer>
       <ButtonIcon>
-        <Icon name="arrow-up-right" />
+        <Icon type={onDiet ? 'ONDIET' : 'OFFDIET'} name="arrow-up-right" />
       </ButtonIcon>
     </Container>
   )

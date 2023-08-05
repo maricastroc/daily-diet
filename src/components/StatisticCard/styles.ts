@@ -2,13 +2,20 @@ import styled from 'styled-components/native'
 import ArrowUpRight from 'react-native-vector-icons/Feather'
 import { TouchableOpacity } from 'react-native'
 
-export const Container = styled.View`
+export type StatisticsCardTypeStyleProps = 'ONDIET' | 'OFFDIET'
+
+type Props = {
+  type: StatisticsCardTypeStyleProps
+}
+
+export const Container = styled(TouchableOpacity)<Props>`
   position: relative;
   justify-content: center;
   align-items: center;
   padding: 28px;
   border-radius: 8px;
-  background-color: ${({ theme }) => theme.colors.green_700};
+  background-color: ${({ theme, type }) =>
+    type === 'ONDIET' ? theme.colors.green_700 : theme.colors.red_700};
 `
 
 export const TextContainer = styled.View`
@@ -38,7 +45,8 @@ export const ButtonIcon = styled(TouchableOpacity)`
   align-items: center;
 `
 
-export const Icon = styled(ArrowUpRight)`
+export const Icon = styled(ArrowUpRight)<Props>`
   font-size: 24px;
-  color: ${({ theme }) => theme.colors.green_300};
+  color: ${({ theme, type }) =>
+    type === 'ONDIET' ? theme.colors.green_300 : theme.colors.red_300};
 `

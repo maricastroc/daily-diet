@@ -101,7 +101,7 @@ export function EditMeal() {
 
   return (
     <Container>
-      <ScreenHeader type="DEFAULT" title="Edit Meal" />
+      <ScreenHeader title="Edit Meal" />
       <Form>
         <InputContainer>
           <LabelBase label="Name" />
