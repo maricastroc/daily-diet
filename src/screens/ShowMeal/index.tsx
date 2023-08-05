@@ -1,4 +1,5 @@
 import { ScreenHeader } from '@components/ScreenHeader'
+import Toast from 'react-native-toast-message'
 import {
   ButtonsWrapper,
   Container,
@@ -15,6 +16,9 @@ import {
 import { useRoute, useNavigation } from '@react-navigation/native'
 import { MealProps } from '@storage/storageConfig'
 import { Button } from '@components/Button'
+import { ModalBase } from '@components/ModalBase'
+import { useState } from 'react'
+import { removeMeal } from '@storage/meals/removeMeal'
 
 type RouteParams = {
   meal: MealProps
@@ -22,15 +26,42 @@ type RouteParams = {
 
 export function ShowMeal() {
   const route = useRoute()
+
   const { meal } = route.params as RouteParams
+
   const navigation = useNavigation()
+
+  const showToast = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Remove Meal',
+      text2: 'Meal successfully deleted!',
+    })
+  }
+
+  const [showModal, setShowModal] = useState(false)
 
   function goToEditMealScreen(meal: MealProps) {
     navigation.navigate('editMeal', { meal })
   }
 
+  async function handleRemoveMeal() {
+    try {
+      await removeMeal(meal)
+      showToast()
+      navigation.navigate('home')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <Container>
+      <ModalBase
+        isVisible={showModal}
+        toggleModal={() => setShowModal(false)}
+        onPress={handleRemoveMeal}
+      />
       <ScreenHeader title="Meal" />
       <MealDetailsContainer>
         <ContentWrapper>
@@ -62,6 +93,7 @@ export function ShowMeal() {
             type="TERTIARY"
             hasIcon
             iconName="trash"
+            onPress={() => setShowModal(true)}
           />
         </ButtonsWrapper>
       </MealDetailsContainer>

@@ -2,8 +2,6 @@
 /* eslint-disable no-lone-blocks */
 import { ScreenHeader } from '@components/ScreenHeader'
 import {
-  ButtonsContainer,
-  ButtonsLabel,
   ConfirmDateBtn,
   ConfirmDateText,
   Container,
@@ -14,10 +12,7 @@ import {
   Form,
   InputContainer,
 } from './styles'
-import { InnerContainerForTwoItems } from '@components/InnerContainerForTwoItems'
-import { ContainerForTwoItems } from '@components/ContainerForTwoItems'
-import { Alert, Modal, View } from 'react-native'
-import { DietButton } from '@components/DietButton'
+import { Alert, Modal } from 'react-native'
 import { Button } from '@components/Button'
 import { useState } from 'react'
 import DateTimePicker, {
@@ -27,11 +22,13 @@ import { getFormattedDate } from '@utils/getFormattedDate'
 import { LabelBase } from '@components/LabelBase'
 import { getFormattedTime } from '@utils/getFormattedTime'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { addNewMeal } from '@storage/meals/addNewMeal'
 import { generateRandomId } from '@utils/generateRandomID'
 import { MealProps } from '@storage/storageConfig'
 import { formatStringToDate } from '@utils/formatStringToDate'
 import { InputBase } from '@components/InputBase'
+import { DietButtonGroup } from '@components/DietButtonGroup'
+import { editMeal } from '@storage/meals/editMeal'
+import Toast from 'react-native-toast-message'
 
 type RouteParams = {
   meal: MealProps
@@ -40,11 +37,17 @@ type RouteParams = {
 export function EditMeal() {
   const route = useRoute()
 
+  const showToast = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Edit Meal',
+      text2: 'Meal successfully edited!',
+    })
+  }
+
   const { meal } = route.params as RouteParams
 
-  const [selectedType, setSelectedType] = useState(
-    meal.isOnDiet ? 'ONDIET' : 'OFFDIET',
-  )
+  const [isOnDiet, setIsOnDiet] = useState<boolean | null>(meal.isOnDiet)
 
   const [showDatePicker, setShowDatePicker] = useState(false)
 
@@ -58,8 +61,8 @@ export function EditMeal() {
 
   const navigation = useNavigation()
 
-  const handleSelectType = (type: string) => {
-    setSelectedType(type)
+  function handleIsOnDiet(value: boolean) {
+    setIsOnDiet(value)
   }
 
   function onChange(
@@ -73,7 +76,7 @@ export function EditMeal() {
 
   async function handleEditMeal() {
     try {
-      if (name === '' || description === '' || selectedType === '') {
+      if (name === '' || description === '' || isOnDiet === null) {
         return Alert.alert(
           'New Meal',
           'Please, fill all the fields in order to edit this meal.',
@@ -86,10 +89,10 @@ export function EditMeal() {
         description,
         time: getFormattedTime(date),
         date: getFormattedDate(date),
-        isOnDiet: selectedType === 'ONDIET',
+        isOnDiet,
       }
 
-      await addNewMeal(newMeal)
+      await editMeal(meal, newMeal)
       navigation.navigate('home')
     } catch (error) {
       console.log(error)
@@ -98,7 +101,7 @@ export function EditMeal() {
 
   return (
     <Container>
-      <ScreenHeader type="DEFAULT" title="New Meal" />
+      <ScreenHeader type="DEFAULT" title="Edit Meal" />
       <Form>
         <InputContainer>
           <LabelBase label="Name" />
@@ -124,30 +127,17 @@ export function EditMeal() {
             </DateButton>
           </InputContainer>
         )}
-        <ButtonsContainer>
-          <ButtonsLabel>Is it on your diet?</ButtonsLabel>
-          <ContainerForTwoItems>
-            <InnerContainerForTwoItems>
-              <DietButton
-                type="ONDIET"
-                onPress={() => handleSelectType('ONDIET')}
-                isSelected={selectedType === 'ONDIET'}
-              />
-            </InnerContainerForTwoItems>
-            <View style={{ marginLeft: 12, marginRight: 12 }} />
-            <InnerContainerForTwoItems>
-              <DietButton
-                type="OFFDIET"
-                onPress={() => handleSelectType('OFFDIET')}
-                isSelected={selectedType === 'OFFDIET'}
-              />
-            </InnerContainerForTwoItems>
-          </ContainerForTwoItems>
-        </ButtonsContainer>
+        <DietButtonGroup
+          onSelect={handleIsOnDiet}
+          initialValue={meal.isOnDiet}
+        />
         <Button
-          title="Register your Meal"
+          title="Save Changes"
           hasIcon={false}
-          onPress={() => handleEditMeal()}
+          onPress={() => {
+            showToast()
+            handleEditMeal()
+          }}
         />
       </Form>
       {showDatePicker && (
