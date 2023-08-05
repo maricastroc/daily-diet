@@ -23,6 +23,9 @@ export declare global {
           isOnDiet: boolean
         }
       }
+      feedback: {
+        isOnDiet: boolean
+      }
     }
   }
 }

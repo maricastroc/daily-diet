@@ -29,7 +29,7 @@ export function DietButtonGroup({
           <DietButton
             type="ONDIET"
             onPress={() => handleSelectType(true)}
-            isSelected={initialValue !== null && !!isOnDiet}
+            isSelected={isOnDiet !== null && !!isOnDiet}
           />
         </InnerContainerForTwoItems>
         <View style={{ marginLeft: 12, marginRight: 12 }} />
@@ -37,7 +37,7 @@ export function DietButtonGroup({
           <DietButton
             type="OFFDIET"
             onPress={() => handleSelectType(false)}
-            isSelected={initialValue !== null && !isOnDiet}
+            isSelected={isOnDiet !== null && !isOnDiet}
           />
         </InnerContainerForTwoItems>
       </ContainerForTwoItems>

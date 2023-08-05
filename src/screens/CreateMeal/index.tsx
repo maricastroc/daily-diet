@@ -1,6 +1,5 @@
 import { Alert, Modal } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import Toast from 'react-native-toast-message'
 import { useState } from 'react'
 
 import DateTimePicker, {
@@ -44,14 +43,6 @@ export function CreateMeal() {
 
   const navigation = useNavigation()
 
-  const showToast = () => {
-    Toast.show({
-      type: 'error',
-      text1: 'Edit Meal',
-      text2: 'Meal successfully edited!',
-    })
-  }
-
   function onChange(
     event: DateTimePickerEvent,
     selectedDate?: Date | undefined,
@@ -86,7 +77,7 @@ export function CreateMeal() {
       console.log(newMeal.date)
 
       await addNewMeal(newMeal)
-      navigation.navigate('home')
+      navigation.navigate('feedback', { isOnDiet })
     } catch (error) {
       console.log(error)
     }
@@ -125,7 +116,6 @@ export function CreateMeal() {
           hasIcon={false}
           onPress={() => {
             handleCreateNewMeal()
-            showToast()
           }}
         />
       </Form>

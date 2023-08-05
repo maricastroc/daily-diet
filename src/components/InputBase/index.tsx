@@ -34,7 +34,7 @@ export function InputBase({ type = 'DEFAULT', onChange, value = '' }: Props) {
         }}
         onBlur={handleInputBlur}
         onChangeText={onChange}
-        value={value !== '' ? value : ''}
+        defaultValue={value !== '' ? value : ''}
       />
     </Container>
   )
