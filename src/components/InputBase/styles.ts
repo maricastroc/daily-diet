@@ -13,9 +13,7 @@ export const Container = styled.View<Props>`
   justify-content: flex-start;
 `
 
-export const InputText = styled.TextInput.attrs<Props>(({ type }) => ({
-  multiline: type === 'BIGGER',
-}))<Props>`
+export const InputText = styled.TextInput`
   background-color: ${({ theme }) => theme.colors.gray_400};
   color: ${({ theme }) => theme.colors.gray_100};
   font-size: ${({ theme }) => theme.font_size.sm}px;

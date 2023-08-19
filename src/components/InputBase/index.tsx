@@ -1,14 +1,14 @@
 import { useTheme } from 'styled-components'
 import { Container, InputText, InputTypeStyleProps } from './styles'
 import { useState } from 'react'
+import { TextInputProps } from 'react-native'
 
-type Props = {
+type Props = TextInputProps & {
   type?: InputTypeStyleProps
-  onChange: (value: string) => void
   value?: string
 }
 
-export function InputBase({ type = 'DEFAULT', onChange, value = '' }: Props) {
+export function InputBase({ type = 'DEFAULT', value = '', ...rest }: Props) {
   const [isFocused, setIsFocused] = useState(false)
   const theme = useTheme()
 
@@ -23,7 +23,6 @@ export function InputBase({ type = 'DEFAULT', onChange, value = '' }: Props) {
   return (
     <Container type={type}>
       <InputText
-        type={type}
         style={{
           borderColor: isFocused
             ? theme.colors.green_500
@@ -32,9 +31,10 @@ export function InputBase({ type = 'DEFAULT', onChange, value = '' }: Props) {
         onFocus={() => {
           handleInputFocus()
         }}
+        placeholderTextColor={theme.colors.gray_300}
         onBlur={handleInputBlur}
-        onChangeText={onChange}
         defaultValue={value !== '' ? value : ''}
+        {...rest}
       />
     </Container>
   )

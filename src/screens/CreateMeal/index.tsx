@@ -1,4 +1,4 @@
-import { Alert, Modal } from 'react-native'
+import { Alert, Keyboard, Modal, TouchableWithoutFeedback } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
 
@@ -81,61 +81,79 @@ export function CreateMeal() {
     }
   }
 
+  function handleCloseKeyboard() {
+    Keyboard.dismiss()
+  }
+
   return (
-    <Container>
-      <ScreenHeader title="New Meal" />
-      <Form>
-        <InputContainer>
-          <LabelBase label="Name" />
-          <InputBase type="DEFAULT" onChange={(value) => setName(value)} />
-        </InputContainer>
-        <InputContainer>
-          <LabelBase label="Description" />
-          <InputBase
-            type="BIGGER"
-            onChange={(value) => setDescription(value)}
-          />
-        </InputContainer>
-        {!showDatePicker && (
+    <TouchableWithoutFeedback onPress={handleCloseKeyboard}>
+      <Container>
+        <ScreenHeader title="New Meal" />
+        <Form>
           <InputContainer>
-            <LabelBase label="Date" />
-            <DateButton onPress={() => setShowDatePicker(true)}>
-              <DateTextButton>
-                {date
-                  ? `${getFormattedDate(date)} - ${getFormattedTime(date)}`
-                  : ''}
-              </DateTextButton>
-            </DateButton>
-          </InputContainer>
-        )}
-        <DietButtonGroup onSelect={handleIsOnDiet} />
-        <Button
-          title="Register your Meal"
-          hasIcon={false}
-          onPress={() => {
-            handleCreateNewMeal()
-          }}
-        />
-      </Form>
-      {showDatePicker && (
-        <Modal visible={showDatePicker} transparent={true} animationType="fade">
-          <DateTimePickerContainer>
-            <DateTimePickerLabel>
-              Select your meal&apos;s date and hour:
-            </DateTimePickerLabel>
-            <DateTimePicker
-              mode="datetime"
-              display="spinner"
-              textColor="white"
-              value={date}
-              onChange={onChange}
+            <LabelBase label="Name" />
+            <InputBase
+              placeholder="Your meal here"
+              type="DEFAULT"
+              onChangeText={(value) => setName(value)}
+              value={name}
             />
-            <ConfirmDateBtn onPress={() => setShowDatePicker(false)}>
-              <ConfirmDateText>Confirm Date</ConfirmDateText>
-            </ConfirmDateBtn>
-          </DateTimePickerContainer>
-        </Modal>
-      )}
-    </Container>
+          </InputContainer>
+          <InputContainer>
+            <LabelBase label="Description" />
+            <InputBase
+              type="BIGGER"
+              placeholder="Your meal description here"
+              onChangeText={(value) => setDescription(value)}
+              value={description}
+              multiline={true}
+            />
+          </InputContainer>
+          {!showDatePicker && (
+            <InputContainer>
+              <LabelBase label="Date" />
+              <DateButton onPress={() => setShowDatePicker(true)}>
+                <DateTextButton>
+                  {date
+                    ? `${getFormattedDate(date)} - ${getFormattedTime(date)}`
+                    : ''}
+                </DateTextButton>
+              </DateButton>
+            </InputContainer>
+          )}
+          <DietButtonGroup onSelect={handleIsOnDiet} />
+          <Button
+            title="Register your Meal"
+            hasIcon={false}
+            onPress={() => {
+              handleCreateNewMeal()
+            }}
+          />
+        </Form>
+        {showDatePicker && (
+          <Modal
+            visible={showDatePicker}
+            transparent={true}
+            animationType="fade"
+          >
+            <DateTimePickerContainer>
+              <DateTimePickerLabel>
+                Select your meal&apos;s date and hour:
+              </DateTimePickerLabel>
+              <DateTimePicker
+                mode="datetime"
+                display="spinner"
+                textColor="white"
+                value={date}
+                onChange={onChange}
+              />
+              <ConfirmDateBtn onPress={() => setShowDatePicker(false)}>
+                <ConfirmDateText>Confirm Date</ConfirmDateText>
+              </ConfirmDateBtn>
+            </DateTimePickerContainer>
+          </Modal>
+        )}
+      </Container>
+    </TouchableWithoutFeedback>
   )
 }
