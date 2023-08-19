@@ -55,6 +55,8 @@ export function Home() {
     }
   }
 
+  console.log(mealGroups)
+
   useFocusEffect(
     useCallback(() => {
       fetchMealGroups()
@@ -64,11 +66,13 @@ export function Home() {
   return (
     <Container>
       <HomeHeader />
-      <StatisticCard
-        onPress={goToStatisticsScreen}
-        value={onDietPercentage}
-        onDiet={isOnDietPercentageHigher}
-      />
+      {Number.isNaN(onDietPercentage) && (
+        <StatisticCard
+          onPress={goToStatisticsScreen}
+          value={onDietPercentage}
+          onDiet={isOnDietPercentageHigher}
+        />
+      )}
       <MealsLabel>
         <MealsTitle>Meals</MealsTitle>
         <Button
